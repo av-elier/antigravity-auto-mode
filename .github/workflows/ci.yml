@@ -1,0 +1,133 @@
+name: CI - Shieldstral Guardrail Test Suite
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      run_real_model:
+        description: "Run live Shieldstral 3B model evaluations (requires GGUF weights)"
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  # -------------------------------------------------------------------------
+  # Job 1: Fast Lint & Manifest Contract Validation
+  # -------------------------------------------------------------------------
+  lint-and-contracts:
+    name: Lint & Manifest Contracts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Verify Antigravity Manifest Contracts
+        run: |
+          python -m pytest tests/unit/test_plugin_contracts.py -v
+
+  # -------------------------------------------------------------------------
+  # Job 2: Unit & Math Tests Matrix (Multi-OS & Multi-Python)
+  # -------------------------------------------------------------------------
+  unit-tests:
+    name: Unit Tests (${{ matrix.os }} - Py ${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Run Unit Tests
+        run: |
+          python scripts/run_tests.py --kind unit -v
+
+  # -------------------------------------------------------------------------
+  # Job 3: Integration & Sidecar Lifecycle Tests
+  # -------------------------------------------------------------------------
+  integration-and-e2e:
+    name: Integration & E2E Suites (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.10", "3.11"]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Run Integration Tests
+        run: |
+          python scripts/run_tests.py --kind integration -v
+
+      - name: Run E2E Simulation Tests
+        run: |
+          python scripts/run_tests.py --kind e2e -v
+
+  # -------------------------------------------------------------------------
+  # Job 4: Safety Dataset Evals & Prompt Regression Prevention
+  # -------------------------------------------------------------------------
+  safety-evals:
+    name: Safety Evals & Prompt Regression Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Run Safety Benchmark (Zero False Allows Invariant Check)
+        run: |
+          python scripts/run_tests.py --kind evals -v
+
+      - name: Validate guardctl eval CLI
+        run: |
+          python -m cli.guardctl eval --mock

@@ -1,0 +1,66 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "antigravity-auto-mode"
+version = "1.0.0"
+description = "Intelligent Auto-Approval & Security Guardrail for Google Antigravity (agy), powered by local Shieldstral 3B."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "Apache-2.0" }
+authors = [
+    { name = "Aleksei Pozdniakov" }
+]
+keywords = [
+    "antigravity",
+    "agy",
+    "ai-agent",
+    "shieldstral",
+    "mistral",
+    "claude-code-auto-mode",
+    "ai-safety",
+    "guardrails",
+    "local-llm",
+    "llama-cpp-python",
+    "developer-tools",
+    "auto-approval",
+    "autonomous-coding",
+    "security-guardrail"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Topic :: Security",
+    "Topic :: Software Development :: Build Tools",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+[project.urls]
+Homepage = "https://github.com/av-elier/antigravity-auto-mode"
+Repository = "https://github.com/av-elier/antigravity-auto-mode"
+Issues = "https://github.com/av-elier/antigravity-auto-mode/issues"
+Documentation = "https://github.com/av-elier/antigravity-auto-mode#readme"
+
+[project.scripts]
+guardctl = "cli.guardctl:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests/unit", "tests/integration", "tests/e2e", "tests/eval_suite"]
+python_files = ["test_*.py"]
+pythonpath = ["."]
+markers = [
+    "unit: Fast in-memory unit tests for math, policy formatting, cache hashing, and plugin schemas",
+    "integration: Integration tests for daemon server endpoints, hook client, and sidecar lifecycle",
+    "e2e: End-to-end simulation tests executing subprocesses with Antigravity JSON contracts",
+    "evals: Safety dataset evaluation and prompt regression prevention tests",
+    "real_model: Tests requiring the real Shieldstral 3B GGUF model weights",
+    "cache: Quantitative tests verifying KV prefix cache and SHA-256 client cache speedup",
+    "sidecar: Tests for Antigravity Sidecar configuration, discovery, and lifecycle",
+    "slow: Tests with longer execution times",
+]

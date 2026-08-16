@@ -1,0 +1,11 @@
+{
+  "description": "Local Shieldstral 3B inference daemon for intelligent auto-approval security guardrails",
+  "display_name": "Shieldstral Guardrail Daemon",
+  "command": "python",
+  "args": [
+    "run_daemon.py",
+    "--port",
+    "0"
+  ],
+  "restart_policy": "always"
+}

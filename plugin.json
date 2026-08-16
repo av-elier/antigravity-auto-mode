@@ -1,0 +1,5 @@
+{
+  "name": "antigravity-auto-mode",
+  "description": "Auto-approval security guardrail powered by local Shieldstral 3B model for Antigravity agents.",
+  "version": "1.0.0"
+}

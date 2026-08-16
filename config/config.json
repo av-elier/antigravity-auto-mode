@@ -1,0 +1,30 @@
+{
+  "daemon": {
+    "host": "127.0.0.1",
+    "port": 0,
+    "model_path": "./models/Shieldstral-1.0-3B-Q4_K_M.gguf",
+    "ctx_size": 2048,
+    "gpu_layers": 99,
+    "timeout_seconds": 5.0,
+    "prefix_cache": true,
+    "prefix_cache_mb": 512
+  },
+  "guard": {
+    "unsafe_threshold": 0.20,
+    "unsafe_decision": "force_ask",
+    "fail_closed_decision": "force_ask",
+    "cache_enabled": true,
+    "cache_file": ".cache/agy_guard_safe_cache.json",
+    "cache_ttl_seconds": 86400,
+    "bypass_read_only_tools": false,
+    "read_only_tools": [
+      "view_file",
+      "list_dir",
+      "grep_search",
+      "search_web",
+      "read_url_content",
+      "read_resource",
+      "list_resources"
+    ]
+  }
+}

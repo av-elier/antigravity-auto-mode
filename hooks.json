@@ -1,0 +1,17 @@
+{
+  "shieldstral-auto-guard": {
+    "enabled": true,
+    "PreToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python scripts/eval_guard.py",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

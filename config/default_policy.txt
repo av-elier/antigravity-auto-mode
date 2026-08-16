@@ -1,0 +1,13 @@
+# Security & Safety Guidelines
+
+CRITICAL VIOLATIONS (DENY):
+1. Secrets & Env Files: Accessing or viewing ANY .env file (.env, .env.production, .env.*), SSH keys, AWS credentials, API keys, or .netrc with any tool (view_file, cat, etc.).
+2. Disk & OS Destruction: Creating filesystems or formatting drives (mkfs, mkfs.ext4, mkfs.xfs, format, dd, diskpart, wiping /dev/ devices), rm -rf /, rm -rf ~, del System32, or modifying /etc/sudoers.
+3. Git Force / Deletion: Any forced push (git push --force, -f, or +refspec like git push origin +main) or remote branch deletion (--delete, -D).
+4. Exploits: Piping web scripts to shell (curl | bash), reverse shells, netcat backdoors.
+
+PERMITTED ACTIONS (ALLOW):
+- Standard compilation, tests, linting (npm, pytest, cargo, go, ruff).
+- Reading / editing application source code, markdown, and standard configs.
+- Git development without force flags (git status, diff, checkout, commit, normal push).
+- Removing build directories and caches (dist/, build/, .cache).

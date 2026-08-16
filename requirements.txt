@@ -1,0 +1,6 @@
+# Core dependencies for the Shieldstral Daemon (Inference Engine)
+# Note: The client hook (scripts/eval_guard.py) requires ONLY the Python 3 standard library.
+
+llama-cpp-python>=0.2.80; platform_system != "Windows" or python_version >= "3.10"
+huggingface_hub>=0.20.0
+pytest>=7.0.0
