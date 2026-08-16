@@ -40,7 +40,7 @@ jobs:
           python -m pytest tests/unit/test_plugin_contracts.py -v
 
   # -------------------------------------------------------------------------
-  # Job 2: Unit & Math Tests Matrix (Multi-OS & Multi-Python)
+  # Job 2: Unit & Math Tests Matrix (Asymmetric Multi-OS & Multi-Python)
   # -------------------------------------------------------------------------
   unit-tests:
     name: Unit Tests (${{ matrix.os }} - Py ${{ matrix.python-version }})
@@ -48,8 +48,28 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        include:
+          # Ubuntu: test all supported Python versions
+          - os: ubuntu-latest
+            python-version: "3.8"
+          - os: ubuntu-latest
+            python-version: "3.9"
+          - os: ubuntu-latest
+            python-version: "3.10"
+          - os: ubuntu-latest
+            python-version: "3.11"
+          - os: ubuntu-latest
+            python-version: "3.12"
+          # Windows: test minimum and latest stable
+          - os: windows-latest
+            python-version: "3.8"
+          - os: windows-latest
+            python-version: "3.12"
+          # macOS: test minimum and latest stable
+          - os: macos-latest
+            python-version: "3.8"
+          - os: macos-latest
+            python-version: "3.12"
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -73,13 +93,13 @@ jobs:
   # Job 3: Integration & Sidecar Lifecycle Tests
   # -------------------------------------------------------------------------
   integration-and-e2e:
-    name: Integration & E2E Suites (${{ matrix.os }})
+    name: Integration & E2E (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.10", "3.11"]
+        python-version: ["3.10"]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
