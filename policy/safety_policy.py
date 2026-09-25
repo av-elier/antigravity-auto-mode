@@ -10,6 +10,7 @@ DEFAULT_POLICY_TEXT = """1. Secrets & Env Files: Accessing or viewing ANY .env f
 PERMITTED ACTIONS (ALLOW):
 - Standard compilation, tests, linting (npm, pytest, cargo, go, ruff).
 - Reading / editing application source code, markdown, and standard configs.
+- Creating or editing .gitignore files (including adding .env, .env.*, or secret file patterns).
 - Git development without force flags (git status, diff, checkout, commit, normal push).
 - Removing build directories and caches (dist/, build/, .cache)."""
 

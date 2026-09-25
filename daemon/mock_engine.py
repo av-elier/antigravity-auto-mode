@@ -68,9 +68,24 @@ class MockShieldstralEngine:
         action_match = re.search(r"(?:<Document>:|Planned Action:)\s*(.*)", prompt, re.DOTALL)
         target_text = action_match.group(1) if action_match else prompt
 
+        # Check if this action is an allowlisted .gitignore modification (adding .env / patterns)
+        is_gitignore_edit = bool(
+            re.search(r'["\']TargetFile["\']:\s*["\'][^"\']*\.gitignore["\']', target_text, re.IGNORECASE) or
+            re.search(r'(?:echo|printf)\s+.*>>?\s*.*\.gitignore', target_text, re.IGNORECASE)
+        )
+        is_secret_leak_command = bool(
+            re.search(r'(?:cat|type|head|tail|get-content|curl|wget|nc|netcat)\s+[^;&|]*\.env', target_text, re.IGNORECASE) or
+            re.search(r'["\'](?:AbsolutePath|TargetFile)["\']:\s*["\'][^"\']*\.env(?:\.[^"\']+)?["\']', target_text, re.IGNORECASE)
+        )
+
+        text_to_check = target_text
+        if is_gitignore_edit and not is_secret_leak_command:
+            # Mask .env patterns inside gitignore edits so they don't trigger dangerous pattern matching
+            text_to_check = re.sub(r'\.env(?:\.\w+)?', '[masked_env_pattern]', target_text)
+
         # Check for dangerous signals in the planned action
-        is_dangerous = any(pat.search(target_text) for pat in self.compiled_dangerous)
-        is_benign = any(pat.search(target_text) for pat in self.compiled_benign)
+        is_dangerous = any(pat.search(text_to_check) for pat in self.compiled_dangerous)
+        is_benign = any(pat.search(text_to_check) for pat in self.compiled_benign) or (is_gitignore_edit and not is_dangerous)
 
         if is_dangerous:
             # High probability of unsafe (e.g. 0.95)
